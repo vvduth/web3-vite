@@ -14,12 +14,12 @@ const main =  async () =>  {
   // const lockedAmount = hre.ethers.utils.parseEther("1");
 
   const Transactions = await hre.ethers.getContractFactory("Transactions");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const transactions  = await Transactions.deploy();
 
-  await lock.deployed();
+  await transactions.deployed();
 
   console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    `Transactions deployed to ${transactions.address}`
   );
 }
 
