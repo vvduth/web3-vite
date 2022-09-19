@@ -4,6 +4,7 @@ import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 import { TransactionContext } from "../context/TransactionContext";
 import Loader from "./Loader";
+import { shortenAddress } from "../utils/shortenAddress";
 
 const commonStyles =
   "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
@@ -16,22 +17,32 @@ const Input  = ({placeholder, name, type, value, handleChange}) => (
     step="0.0001" 
     value={value} 
     onChange={(e)=> handleChange(e, name)}
-    className="my-2 w-full rounded-sm p-2 outline-none ng-transparent text-white border-none text-sm white-glassmorphism"
+    className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
   />
 )
 
 const Welcome = () => {
-  const {connectWallet } = useContext(TransactionContext)
+  const {connectWallet, currentAccount, formData, loading,setFormData, handleChange ,sendTransaction} = useContext(TransactionContext)
 
   
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault() ;
+    console.log("clicked")
+    
+    const {addressTo, amount, keyword, message} = formData; 
+    
 
+    if (!addressTo || !amount || !keyword || !message) {
+      console.log("not eniugh datat")
+      return
+    } 
+    sendTransaction() ; 
   }
-  const handleChange= () => {}
+  
   return (
     <div className="flex w-full justify-center items-center">
-    <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
+    <div className="flex mf:flex-row bg-gray flex-col items-start justify-between md:p-20 py-12 px-4">
       <div className="flex flex-1 justify-start items-start flex-col mf:mr-10">
         <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
           Send Crypto <br /> across the world
@@ -39,7 +50,7 @@ const Welcome = () => {
         <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
           Explore the crypto world. Buy and sell cryptocurrencies easily on PukeDuke ecosystem.
         </p>
-        {true && (
+        {!currentAccount && (
           <button
             type="button"
             onClick={connectWallet}
@@ -73,7 +84,7 @@ const Welcome = () => {
             </div>
             <div>
               <p className="text-white font-light text-sm">
-                Address
+                {shortenAddress(currentAccount)}
               </p>
               <p className="text-white font-semibold text-lg mt-1">
                 Ethereum
@@ -81,15 +92,15 @@ const Welcome = () => {
             </div>
           </div>
         </div>
-        <div className="p-5 sm:w-96 w-full flex flex-col justify-start text-black items-center blue-glassmorphism">
-          <Input placeholder="Address To" className="text-dark" name="addressTo" type="text" handleChange={handleChange} />
+        <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
+          <Input placeholder="Address To"  name="addressTo" type="text" handleChange={handleChange} />
           <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
           <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
           <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
 
           <div className="h-[1px] w-full bg-gray-400 my-2" />
 
-          {false
+          {loading
             ? <Loader />
             : (
               <button
