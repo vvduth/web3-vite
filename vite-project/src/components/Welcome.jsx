@@ -38,6 +38,7 @@ const Welcome = () => {
       return
     } 
     sendTransaction() ; 
+    
   }
   
   return (
